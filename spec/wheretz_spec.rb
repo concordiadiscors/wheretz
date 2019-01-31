@@ -18,6 +18,11 @@ describe WhereTZ do
       it{should == 'Europe/Kiev'}
     end
 
+    context 'nested TZs (eg. Lethoso and South Africa)' do
+      let(:lat_lng){ [-29.31667, 27.48333] }
+      it{should == 'Africa/Maseru'}
+    end
+
     context 'edge case' do
       let(:lat_lng){ [43.6605555555556, 7.2175] }
       it{should == 'Europe/Paris'}

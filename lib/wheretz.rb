@@ -80,11 +80,13 @@ module WhereTZ
   def lookup_geo(lat, lng, candidates)
     point = GeoRuby::SimpleFeatures::Point.from_coordinates([lng, lat])
 
-    polygons = candidates.map{|fname, zone, *|
+    polygons = candidates.map do |fname, zone, *|
       [zone, PARSER.parse(File.read(fname)).features.first.geometry]
-    }
+    end
     candidates = polygons.select{|_, multipolygon|
-      multipolygon.geometries.any?{|polygon| polygon.contains_point?(point)}
+      multipolygon.geometries.any? do |polygon|
+        polygon.rings.count { |r| r.contains_point?(point) }.odd?
+      end
     }
 
     case candidates.size
